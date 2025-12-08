@@ -30,7 +30,7 @@ const events = [
 
   { date: "2004-01-11", title: "თბილისი - საცობიანი ქუჩების ქალაქი", 
     description: `საცობების პრობლემა 2004 წლის დასაწყისშიც აქტუალური იყო. მთავარ გამომწვევ მიზეზებად მრავალი ფაქტორი სახელდებოდა. მათ შორის, გამორთული შუქნიშნები, სამარშრუტო ტაქსებით გადატვირთულობა და  სახიფათო მანევრი, ავტოინსპექტორების  კვალიფიკაცია, გარემოვაჭრეების მიერ დაკავებული საჯარო სივრცე და ვიწრო ქუჩები. როგორც თბილისის საგზაო პოლიციის სამმართველოს უფროსი, გია ბერაძე ამბობა: <blockquote>ქალაქის ქუჩები გაუმტარი გახდა. ყველამ ვიცით,როდის გაკეთდა ეს გზები [...] თბილისში 140 000 მანქანა არის რეგისტრირებული [...] ქუჩებში ცალმხრივი მოძრაობა დაწესდება. ეს უპირველესად ეხება ვარაზისხევს, კოსტავას, მელიქიშვილის, საბურთალოს ქუჩებს</blockquote>`, 
-    category: "article", image: "https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png?token=GHSAT0AAAAAADPL7ZCFD7UZZISTQWY5435U2JXIP7A", 
+    category: "article", image: "https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png", 
     source: {
       name: "კვირის პალიტრა #1 (462), 2004",
       url: "https://dspace.nplg.gov.ge/bitstream/1234/16516/1/KvirisPalitra_2004_N01.pdf"
