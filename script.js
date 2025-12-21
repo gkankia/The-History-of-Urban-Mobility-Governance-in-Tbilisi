@@ -152,6 +152,16 @@ function showEvent(event) {
   
     const contentDiv = document.createElement("div");
     contentDiv.className = "event-content";
+    contentDiv.style.position = 'relative';
+    
+    // Create inner scrollable wrapper
+    const scrollWrapper = document.createElement("div");
+    scrollWrapper.className = "event-content-scroll";
+    scrollWrapper.style.cssText = `
+      height: 100%;
+      overflow-y: auto;
+      padding: 1rem;
+    `;
   
     const dateFormatted = new Date(ev.date).toLocaleDateString("ka-GE");
   
@@ -170,12 +180,31 @@ function showEvent(event) {
       }
     }
   
-    contentDiv.innerHTML = `
+    scrollWrapper.innerHTML = `
       <h3>${ev.title}</h3>
       <p><strong>${dateFormatted}</strong></p>
       <p class="event-description">${ev.description}</p>
       ${sourcesHtml ? `<p class="event-source">წყარო: ${sourcesHtml}</p>` : ""}
     `;
+    
+    contentDiv.appendChild(scrollWrapper);
+    
+    // Add fade overlay OUTSIDE the scroll wrapper
+    const fadeOverlay = document.createElement('div');
+    fadeOverlay.className = 'scroll-fade-overlay';
+    fadeOverlay.style.cssText = `
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    `;
+    contentDiv.appendChild(fadeOverlay);
   
     if (!hasMedia && sameDateEvents.length === 1) {
       card.classList.add("centered-text");
@@ -254,7 +283,52 @@ function showEvent(event) {
     wrapper.appendChild(card);
   });
 
-  fixedEventBox.appendChild(wrapper); // ✅ Append the correct wrapper with the right class
+  fixedEventBox.appendChild(wrapper);
+  
+  // ✅ Update scroll indicators after DOM is ready
+  requestAnimationFrame(() => {
+    updateScrollIndicators();
+    
+    // Add scroll listeners to event-content elements
+    document.querySelectorAll('.event-content').forEach(content => {
+      content.addEventListener('scroll', updateScrollIndicators);
+    });
+  });
+}
+
+// ✅ Show fade gradient when content is scrollable
+function updateScrollIndicators() {
+  console.log('updateScrollIndicators called');
+  document.querySelectorAll('.event-content').forEach((content, index) => {
+    console.log(`Checking event-content ${index}`);
+    const fadeOverlay = content.querySelector('.scroll-fade-overlay');
+    
+    console.log('fadeOverlay:', fadeOverlay);
+    
+    if (!fadeOverlay) {
+      console.log('Missing overlay');
+      return;
+    }
+    
+    const hasScroll = content.scrollHeight > content.clientHeight;
+    const isAtBottom = content.scrollHeight - content.scrollTop <= content.clientHeight + 5;
+    
+    console.log('Scroll check:', {
+      hasScroll,
+      isAtBottom,
+      scrollHeight: content.scrollHeight,
+      clientHeight: content.clientHeight,
+      scrollTop: content.scrollTop
+    });
+    
+    if (hasScroll && !isAtBottom) {
+      fadeOverlay.style.opacity = '1';
+      console.log('Setting fade opacity to 1');
+    } else {
+      fadeOverlay.style.opacity = '0';
+      console.log('Setting fade opacity to 0 - hasScroll:', hasScroll, 'isAtBottom:', isAtBottom);
+    }
+  });
 }
 
 function renderTicks(startDate, endDate, pixelsPerDay) {
@@ -492,5 +566,8 @@ document.addEventListener("keydown", (e) => {
     }
   }
 });
+
+// Update scroll indicators on window resize
+window.addEventListener('resize', updateScrollIndicators);
 
 window.addEventListener("load", () => renderTimeline(events));

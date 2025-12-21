@@ -164,15 +164,24 @@ h1 {
 .event-group:not(.single-event) .event-image-container,
 .event-group:not(.single-event) .event-content {
   flex: 1 1 50%;
-  overflow-y: auto;
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
 }
 
-.event-group:not(.single-event) .event-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 5px;
-  scale: 1;
+.event-group:not(.single-event) .event-content::after {
+  content: '';
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  pointer-events: none;
+  opacity: var(--fade-opacity, 0);
+  transition: opacity 0.3s ease;
+  z-index: 10;
 }
 
 /* 5. Single-event layout (horizontal image/text split) */
