@@ -95,14 +95,14 @@ h1 {
   z-index: 10;
 }
 
-.filter-bar label[for="yearFilter"] {
+.filter-bar label [for="yearFilter"] {
   font-size: 1rem;
   letter-spacing: 1px;
   color: #222;
   font-weight: bold;
 }
 
-#yearFilter {
+#yearFilter, #categoryFilter {
   border: none;
   padding: 0 1.5rem 0.3rem 0.5rem; /* right padding creates space for arrow */
   font-size: 1rem;
@@ -168,6 +168,19 @@ h1 {
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
+}
+
+/* Text alignment for multiple events */
+.event-group:not(.single-event) .event-card:first-child .event-content {
+  text-align: left;
+}
+
+.event-group:not(.single-event) .event-card:last-child:not(:first-child) .event-content {
+  text-align: right;
+}
+
+.event-group:not(.single-event) .event-card:nth-child(2):nth-last-child(2) .event-content {
+  text-align: center;
 }
 
 .event-group:not(.single-event) .event-content::after {
@@ -275,6 +288,17 @@ h1 {
   color: #888;
   font-weight: normal;  /* ✅ removes bold */
   font-family: 'IBM Plex Mono', monospace;
+}
+
+.category-label {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.3rem;
+  font-size: 0.9rem;
+  color: white;
+  border-radius: 5px;
+  font-family: 'IBM Plex Mono', monospace;
+  line-height: 1.25rem;
 }
 
 /* Center text-only single event */

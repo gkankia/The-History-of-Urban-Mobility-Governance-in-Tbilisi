@@ -1,10 +1,15 @@
 console.log(events); // Check if the data loaded correctly
 
 const categoryColors = {
-  Policy: "#2980b9",
-  Infrastructure: "#27ae60",
-  Technology: "#e67e22",
-  Governance: "#8e44ad"
+  news: "#fb9a99",
+  article: "#cab2d6",
+  event: "#a6cee3"
+};
+
+const categoryLabelsGeo = {
+  news: "ახალი ამბავი",
+  article: "სტატია",
+  event: "მოვლენა"
 };
 
 let currentIndex = 0;
@@ -164,6 +169,14 @@ function showEvent(event) {
     `;
   
     const dateFormatted = new Date(ev.date).toLocaleDateString("ka-GE");
+    
+    // Get category label and color (only if category exists)
+    let categoryBadge = "";
+    if (ev.category) {
+      const categoryLabel = categoryLabelsGeo[ev.category] || ev.category;
+      const categoryColor = categoryColors[ev.category] || "#888";
+      categoryBadge = `<span class="category-label" style="background-color: ${categoryColor};">${categoryLabel}</span>`;
+    }
   
     let sourcesHtml = "";
     if (ev.source) {
@@ -182,7 +195,10 @@ function showEvent(event) {
   
     scrollWrapper.innerHTML = `
       <h3>${ev.title}</h3>
-      <p><strong>${dateFormatted}</strong></p>
+      <p>
+        <strong>${dateFormatted}</strong>
+        ${categoryBadge}
+      </p>
       <p class="event-description">${ev.description}</p>
       ${sourcesHtml ? `<p class="event-source">წყარო: ${sourcesHtml}</p>` : ""}
     `;
@@ -197,7 +213,7 @@ function showEvent(event) {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50px;
+      height: 80px;
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
       pointer-events: none;
       opacity: 0;
@@ -289,44 +305,28 @@ function showEvent(event) {
   requestAnimationFrame(() => {
     updateScrollIndicators();
     
-    // Add scroll listeners to event-content elements
-    document.querySelectorAll('.event-content').forEach(content => {
-      content.addEventListener('scroll', updateScrollIndicators);
+    // Add scroll listeners to scroll wrappers
+    document.querySelectorAll('.event-content-scroll').forEach(scroll => {
+      scroll.addEventListener('scroll', updateScrollIndicators);
     });
   });
 }
 
 // ✅ Show fade gradient when content is scrollable
 function updateScrollIndicators() {
-  console.log('updateScrollIndicators called');
-  document.querySelectorAll('.event-content').forEach((content, index) => {
-    console.log(`Checking event-content ${index}`);
+  document.querySelectorAll('.event-content').forEach((content) => {
+    const scrollWrapper = content.querySelector('.event-content-scroll');
     const fadeOverlay = content.querySelector('.scroll-fade-overlay');
     
-    console.log('fadeOverlay:', fadeOverlay);
+    if (!fadeOverlay || !scrollWrapper) return;
     
-    if (!fadeOverlay) {
-      console.log('Missing overlay');
-      return;
-    }
-    
-    const hasScroll = content.scrollHeight > content.clientHeight;
-    const isAtBottom = content.scrollHeight - content.scrollTop <= content.clientHeight + 5;
-    
-    console.log('Scroll check:', {
-      hasScroll,
-      isAtBottom,
-      scrollHeight: content.scrollHeight,
-      clientHeight: content.clientHeight,
-      scrollTop: content.scrollTop
-    });
+    const hasScroll = scrollWrapper.scrollHeight > scrollWrapper.clientHeight;
+    const isAtBottom = scrollWrapper.scrollHeight - scrollWrapper.scrollTop <= scrollWrapper.clientHeight + 5;
     
     if (hasScroll && !isAtBottom) {
       fadeOverlay.style.opacity = '1';
-      console.log('Setting fade opacity to 1');
     } else {
       fadeOverlay.style.opacity = '0';
-      console.log('Setting fade opacity to 0 - hasScroll:', hasScroll, 'isAtBottom:', isAtBottom);
     }
   });
 }
