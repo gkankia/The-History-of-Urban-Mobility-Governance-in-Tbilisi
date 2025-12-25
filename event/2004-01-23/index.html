@@ -36,14 +36,13 @@
   <!-- Canonical URL -->
   <link rel="canonical" href="https://mobilitytrajectories.netlify.app/event/2004-01-23/">
   
-  <!-- Redirect to main timeline with hash (delayed for crawlers) -->
-  <meta http-equiv="refresh" content="2; url=https://mobilitytrajectories.netlify.app/index.html#2004-01-23">
+  <!-- Redirect to main app (which will read the /event/slug/ path) -->
+  <meta http-equiv="refresh" content="0; url=/">
   <script>
+    // Immediate redirect to home, which will parse the current URL path
     // Only redirect for human users, not crawlers
-    if (!/bot|crawler|spider|crawling/i.test(navigator.userAgent)) {
-      setTimeout(function() {
-        window.location.replace("https://mobilitytrajectories.netlify.app/index.html#2004-01-23");
-      }, 100);
+    if (!/bot|crawler|spider|crawling|facebookexternalhit|linkedinbot/i.test(navigator.userAgent)) {
+      window.location.replace("/");
     }
   </script>
   
@@ -120,11 +119,11 @@
       <div class="spinner"></div>
       <p>Loading interactive timeline...</p>
     </div>
-    <a href="https://mobilitytrajectories.netlify.app/index.html#2004-01-23" class="cta">View on Timeline</a>
+    <a href="/" class="cta">View on Timeline</a>
   </div>
   
   <noscript>
-    <meta http-equiv="refresh" content="0; url=https://mobilitytrajectories.netlify.app/index.html#2004-01-23">
+    <meta http-equiv="refresh" content="0; url=/">
   </noscript>
 </body>
 </html>
