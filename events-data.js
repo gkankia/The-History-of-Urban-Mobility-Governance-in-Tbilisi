@@ -427,3 +427,8 @@ const events = [
   { date: "2023-05-01", title: "MaaS Pilot Launch", description: "Mobility-as-a-Service pilot programs.", category: "Infrastructure", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
   { date: "2024-11-12", title: "Urban Governance Reform", description: "Capacity-building initiatives.", category: "Governance", image: "https://via.placeholder.com/400x300?text=Metro+2016"}
 ];
+
+// export event arrays
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = events;
+}

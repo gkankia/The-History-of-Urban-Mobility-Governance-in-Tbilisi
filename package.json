@@ -1,0 +1,13 @@
+{
+  "name": "urban-mobility-timeline",
+  "version": "1.0.0",
+  "description": "Interactive timeline of urban governance and mobility in Tbilisi",
+  "main": "index.html",
+  "scripts": {
+    "build": "node generate-event-pages.js",
+    "dev": "npx serve ."
+  },
+  "keywords": ["timeline", "urban", "mobility", "governance"],
+  "author": "",
+  "license": "MIT"
+}

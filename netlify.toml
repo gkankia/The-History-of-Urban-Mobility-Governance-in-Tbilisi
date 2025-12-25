@@ -1,0 +1,27 @@
+# netlify.toml
+[build]
+  command = "node generate-event-pages.js"
+  publish = "."
+
+# Redirect rules for clean URLs
+[[redirects]]
+  from = "/event/:slug"
+  to = "/event/:slug/index.html"
+  status = 200
+
+# 404 fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
+
+# Headers for better caching and security
+[[headers]]
+  for = "/event/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
