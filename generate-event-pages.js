@@ -42,35 +42,58 @@ events.forEach(event => {
   const eventUrl = `${SITE_URL}/event/${event.slug}/`;
   const mainUrl = `${SITE_URL}/index.html#${event.slug}`;
 
+  // Escape quotes in descriptions for HTML attributes
+  const escapedDescription = description.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  const escapedTitle = title.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
   // Generate HTML
   const html = `<!DOCTYPE html>
-<html lang="ka">
+<html lang="ka" prefix="og: http://ogp.me/ns#">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Event-specific meta tags -->
-  <title>${title} | პოსტრევოლუციური მმართველობა</title>
+  <!-- Primary Meta Tags -->
+  <title>${escapedTitle} | პოსტრევოლუციური მმართველობა</title>
+  <meta name="title" content="${escapedTitle}">
+  <meta name="description" content="${escapedDescription}">
   
-  <!-- Open Graph -->
-  <meta property="og:site_name" content="Urban Mobility Timeline" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:url" content="${eventUrl}" />
-  <meta property="og:image" content="${image}" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta name="linkedin:card" content="summary_large_image" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="${eventUrl}">
+  <meta property="og:title" content="${escapedTitle}">
+  <meta property="og:description" content="${escapedDescription}">
+  <meta property="og:image" content="${image}">
+  <meta property="og:image:secure_url" content="${image}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Urban Mobility Timeline">
+  <meta property="og:locale" content="ka_GE">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="${eventUrl}">
+  <meta property="twitter:title" content="${escapedTitle}">
+  <meta property="twitter:description" content="${escapedDescription}">
+  <meta property="twitter:image" content="${image}">
+  
+  <!-- LinkedIn specific -->
+  <meta property="article:published_time" content="${event.date}T00:00:00+00:00">
+  <meta property="article:section" content="Urban Governance">
   
   <!-- Canonical URL -->
-  <link rel="canonical" href="${eventUrl}" />
+  <link rel="canonical" href="${eventUrl}">
   
-  <!-- Redirect to main timeline with hash -->
-  <meta http-equiv="refresh" content="5; url=${mainUrl}">
+  <!-- Redirect to main timeline with hash (delayed for crawlers) -->
+  <meta http-equiv="refresh" content="2; url=${mainUrl}">
   <script>
-    // Immediate redirect
-    window.location.replace("${mainUrl}");
+    // Only redirect for human users, not crawlers
+    if (!/bot|crawler|spider|crawling/i.test(navigator.userAgent)) {
+      setTimeout(function() {
+        window.location.replace("${mainUrl}");
+      }, 100);
+    }
   </script>
   
   <style>
@@ -82,9 +105,26 @@ events.forEach(event => {
       height: 100vh;
       margin: 0;
       background: #f5f5f5;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 600px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1rem;
     }
     .loading {
       text-align: center;
+      margin-top: 2rem;
     }
     .spinner {
       border: 3px solid #f3f3f3;
@@ -99,13 +139,37 @@ events.forEach(event => {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    .cta {
+      display: inline-block;
+      background: #d32121;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      text-decoration: none;
+      border-radius: 4px;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+    .cta:hover {
+      background: #b01d1d;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 1rem 0;
+    }
   </style>
 </head>
 <body>
-  <div class="loading">
-    <div class="spinner"></div>
-    <p>Loading timeline...</p>
-    <p><small>თუ არ გადაიტანეთ ავტომატურად, <a href="${mainUrl}">დააჭირეთ აქ</a></small></p>
+  <div class="container">
+    <h1>${escapedTitle}</h1>
+    ${image && image.startsWith('http') ? `<img src="${image}" alt="${escapedTitle}">` : ''}
+    <p>${escapedDescription}</p>
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading interactive timeline...</p>
+    </div>
+    <a href="${mainUrl}" class="cta">View on Timeline</a>
   </div>
   
   <noscript>
