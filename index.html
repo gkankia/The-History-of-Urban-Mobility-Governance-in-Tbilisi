@@ -1,9 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Urban Governance & Transport Timeline</title>
+  <title>პოსტრევოლუციური მმართველობა მობილობის ჭრილში</title>
+  
+  <!-- Open Graph Meta Tags for Social Sharing -->
+  <meta property="og:site_name" content="Urban Mobility Timeline" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="პოსტრევოლუციური მმართველობა მობილობის ჭრილში" />
+  <meta property="og:description" content="Interactive timeline of urban governance and mobility in Tbilisi" />
+  <meta property="og:image" content="https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png" />
+  <meta property="og:url" content="https://mobilitytrajectories.netlify.app/" id="og-url" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="პოსტრევოლუციური მმართველობა მობილობის ჭრილში" />
+  <meta name="twitter:description" content="Interactive timeline of urban governance and mobility in Tbilisi" />
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png" />
+  
   <script src="https://unpkg.com/intl@1.2.5/dist/Intl.min.js"></script>
   <script src="https://unpkg.com/intl/locale-data/jsonp/ka-GE.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -53,15 +68,6 @@
       <option value="2023">2023</option>
       <option value="2024">2024</option>
     </select>
-
-    <!--<label for="categoryFilter">კატეგორია:</label>
-    <select id="categoryFilter">
-      <option value="All">სრულად</option>
-      <option value="news">ახალი ამბავი</option>
-      <option value="article">სტატია</option>
-      <option value="event">მოვლენა</option>
-    </select>-->
-
   </div>
 
   <div id="fixedEventBox" class="timeline-fixed-event"></div>
@@ -85,7 +91,6 @@
 
   <!-- Load the events data first -->
   <script src="events-data.js"></script>
-
   <script src="script.js"></script>
 
 </body>

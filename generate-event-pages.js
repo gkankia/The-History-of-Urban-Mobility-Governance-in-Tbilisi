@@ -7,7 +7,7 @@ const path = require('path');
 // Import your events (adjust the path as needed)
 const events = require('./events-data.js');
 
-const SITE_URL = 'https://mobilitytrajectories.netlify.app'; // Change this to your actual Netlify domain
+const SITE_URL = 'https://mobilitytrajectories.netlify.app';
 const OUTPUT_DIR = './event';
 
 // Helper function to strip HTML tags
@@ -40,7 +40,6 @@ events.forEach(event => {
   const description = truncate(stripHTML(event.description), 200);
   const image = event.image || 'https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png';
   const eventUrl = `${SITE_URL}/event/${event.slug}/`;
-  const mainUrl = `${SITE_URL}/index.html#${event.slug}`;
 
   // Escape quotes in descriptions for HTML attributes
   const escapedDescription = description.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -85,14 +84,13 @@ events.forEach(event => {
   <!-- Canonical URL -->
   <link rel="canonical" href="${eventUrl}">
   
-  <!-- Redirect to main timeline with hash (delayed for crawlers) -->
-  <meta http-equiv="refresh" content="2; url=${mainUrl}">
+  <!-- Redirect to main app (which will read the /event/slug/ path) -->
+  <meta http-equiv="refresh" content="0; url=/">
   <script>
+    // Immediate redirect to home, which will parse the current URL path
     // Only redirect for human users, not crawlers
-    if (!/bot|crawler|spider|crawling/i.test(navigator.userAgent)) {
-      setTimeout(function() {
-        window.location.replace("${mainUrl}");
-      }, 100);
+    if (!/bot|crawler|spider|crawling|facebookexternalhit|linkedinbot/i.test(navigator.userAgent)) {
+      window.location.replace("/");
     }
   </script>
   
@@ -169,11 +167,11 @@ events.forEach(event => {
       <div class="spinner"></div>
       <p>Loading interactive timeline...</p>
     </div>
-    <a href="${mainUrl}" class="cta">View on Timeline</a>
+    <a href="/" class="cta">View on Timeline</a>
   </div>
   
   <noscript>
-    <meta http-equiv="refresh" content="0; url=${mainUrl}">
+    <meta http-equiv="refresh" content="0; url=/">
   </noscript>
 </body>
 </html>`;

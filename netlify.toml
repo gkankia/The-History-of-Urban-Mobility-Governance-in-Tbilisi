@@ -3,25 +3,37 @@
   command = "node generate-event-pages.js"
   publish = "."
 
-# Redirect rules for clean URLs
-[[redirects]]
-  from = "/event/:slug"
-  to = "/event/:slug/index.html"
-  status = 200
+# Static event pages exist at /event/event-slug/index.html
+# When a bot visits /event/event-slug/, serve the static HTML with meta tags
+# When a user visits /event/event-slug/ from the app, the app handles it
+# This is achieved by letting the static files exist and be served normally
 
-# 404 fallback
+# The static event pages will automatically redirect users to the main app
+# No special redirects needed - let the file structure work naturally
+
+# 404 fallback - serve index.html only for truly missing routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 404
 
-# Headers for better caching and security
+# Headers for better caching
 [[headers]]
-  for = "/event/*"
+  for = "/event/*/index.html"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    Cache-Control = "public, max-age=3600, must-revalidate"
     
 [[headers]]
-  for = "/*.html"
+  for = "/index.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+    
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
