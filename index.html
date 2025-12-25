@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Urban Governance & Transport Timeline</title>
+  <script src="https://unpkg.com/intl@1.2.5/dist/Intl.min.js"></script>
+  <script src="https://unpkg.com/intl/locale-data/jsonp/ka-GE.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>პოსტრევოლუციური მმართველობა მობილობის ჭრილში</h1>
+
+  <!-- About Project Trigger -->
+  <button id="aboutBtn" class="about-button">პროექტის შესახებ</button>
+
+  <!-- Modal Overlay -->
+  <div id="aboutModal" class="about-modal">
+    <div class="about-content">
+      <span id="closeAbout" class="close-button">&times;</span>
+      <h2>პროექტის შესახებ</h2>
+      <p>
+        This interactive timeline visualizes the development of urban mobility and governance in Tbilisi from 2004 onward. 
+        Each event is documented with media, quotes, and references. Use the arrows or keyboard to navigate through time.
+      </p>
+    </div>
+  </div>
+
+  <div id="filters" class="filter-bar">
+    <label for="yearFilter">აირჩიე წელი:</label>
+    <select id="yearFilter">
+      <option value="All">სრულად</option>
+      <option value="2004">2004</option>
+      <option value="2005">2005</option>
+      <option value="2006">2006</option>
+      <option value="2007">2007</option>
+      <option value="2008">2008</option>
+      <option value="2009">2009</option>
+      <option value="2010">2010</option>
+      <option value="2011">2011</option>
+      <option value="2012">2012</option>
+      <option value="2013">2013</option>
+      <option value="2014">2014</option>
+      <option value="2015">2015</option>
+      <option value="2016">2016</option>
+      <option value="2017">2017</option>
+      <option value="2018">2018</option>
+      <option value="2019">2019</option>
+      <option value="2020">2020</option>
+      <option value="2021">2021</option>
+      <option value="2022">2022</option>
+      <option value="2023">2023</option>
+      <option value="2024">2024</option>
+    </select>
+
+    <!--<label for="categoryFilter">კატეგორია:</label>
+    <select id="categoryFilter">
+      <option value="All">სრულად</option>
+      <option value="news">ახალი ამბავი</option>
+      <option value="article">სტატია</option>
+      <option value="event">მოვლენა</option>
+    </select>-->
+
+  </div>
+
+  <div id="fixedEventBox" class="timeline-fixed-event"></div>
+
+  <div id="left-scroll" class="scroll-arrow left">&#9664;
+    <div id="left-preview" class="arrow-preview"></div>
+  </div>
+  
+  <div id="right-scroll" class="scroll-arrow right">&#9654;
+    <div id="right-preview" class="arrow-preview"></div>
+  </div>
+
+  <div class="timeline-scroll-wrapper">
+    <div id="timeline" class="timeline-container">
+      <div class="timeline-line"></div>
+      <div class="timeline-buffer left"></div>
+      <!-- Timeline points inserted by JS -->
+      <div class="timeline-buffer right"></div>
+    </div>
+  </div>
+
+  <!-- Load the events data first -->
+  <script src="events-data.js"></script>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
