@@ -214,7 +214,7 @@ const events = [
     }
   },
 
-  { date: "2004-02-17", title: "მშენებლობისა და ურბანიზაციის სამინისტრო", 
+  { date: "2004-02-17", title: "მშენებლობისა და ურბანიზაციის სამინისტრო", slug: "event-2004-02-17",
     description: `მინისტრ მერაბ ჩხენკელს ბრალი წაუყენეს, თუმცა არ დაუკავებიათ. მას "ლოკომოტივის" სტადიონის მშენებლობისას დაშვებულ კანონდარღვევებს ედავებოდნენ, რადგან <strong>ექსპერტიზაგაუვლელი ობიექტი ჩაიბარა</strong>. <br>გენერალური პროკურორი, ირაკლი ოქრუაშვილი: <blockquote>მერაბ ჩხენკელს არ დააკავებენ. სამართალდამცველებს დღეს სრული საფუძველი ჰქონდათ დაეკავებინათ იგი, თუმცა ამას არ გააკეთებენ</blockquote><br><a class="in_text_source" href="http://www.nplg.gov.ge/bios/en/00002521/" target="_blank">მერაბ ჩხენკელის ბიოგრაფია</a>`, 
     category: "", image: "https://dspace.nplg.gov.ge/bitstream/1234/230339/1/Chxenkeli_M_Msheneblobis_Ministri%20_Infrastruqtura%20%283%29.jpg", 
     source: {
@@ -398,36 +398,7 @@ const events = [
         }
       ]
   },
-
-
-
-
-
-
-
-  { date: "2016-06-20", title: 
-    "Metro Rail Expansion", description: "Investments in metro networks.", 
-    category: "Infrastructure", image: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" },
-  { date: "2017-01-15", title: "Unified Metropolitan Transport Authority", description: "UMTAs formed in several states.", category: "Infrastructure", image: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" },
-  { date: "2017-01-15", title: "Unified Metropolitan Transport Authority", description: "UMTAs formed in several states.", category: "Infrastructure", image: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" },
-  { date: "2017-01-15", title: "Unified Metropolitan Transport Authority", description: "UMTAs formed in several states.", category: "Infrastructure", image: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" },
-  { date: "2017-01-15", title: "Unified Metropolitan Transport Authority", description: "UMTAs formed in several states.", category: "Infrastructure", image: "https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png" },
-  { date: "2018-07-10", title: "Smart Cities Phase II", description: "Mobility and governance integration.", category: "Policy", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  {
-    date: "2018-09-01",
-    title: "Pilot Showcase",
-    description: "A short demo of the mobility system in action.",
-    video: "https://www.youtube.com/embed/ybV0y509-tg?si=Xj4YvuByaeNRQ3ZU", // embed link
-    category: "Technology"
-  },
-  { date: "2019-11-25", title: "Public Bicycle Sharing", description: "PBSS pilots in Tier II cities.", category: "Technology", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  { date: "2020-09-30", title: "COVID Urban Transport", description: "Operational safety guidelines.", category: "Technology", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  { date: "2021-03-15", title: "Transport Budget Boost", description: "More funding for e-buses and TOD.", category: "Policy", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  { date: "2022-08-18", title: "Electric Bus Procurement", description: "Policy for large-scale adoption.", category: "Governance", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  { date: "2023-05-01", title: "MaaS Pilot Launch", description: "Mobility-as-a-Service pilot programs.", category: "Infrastructure", image: "https://via.placeholder.com/400x300?text=Metro+2016" },
-  { date: "2024-11-12", title: "Urban Governance Reform", description: "Capacity-building initiatives.", category: "Governance", image: "https://via.placeholder.com/400x300?text=Metro+2016"}
-];
-
+]
 // export event arrays
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = events;
