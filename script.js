@@ -1,4 +1,4 @@
-console.log(events); // Check if the data loaded correctly
+console.log(events);
 
 const categoryColors = {
   news: "#fb9a99",
@@ -19,6 +19,18 @@ const container = document.getElementById("timeline");
 const scrollArea = document.querySelector(".timeline-scroll-wrapper");
 const fixedEventBox = document.getElementById("fixedEventBox");
 
+// Check for hash on page load and navigate to that event
+window.addEventListener('load', () => {
+  const hash = window.location.hash.substring(1);
+  if (hash) {
+    const eventIndex = events.findIndex(e => e.slug === hash);
+    if (eventIndex !== -1) {
+      currentIndex = eventIndex;
+    }
+  }
+  renderTimeline(events);
+});
+
 function renderTimeline(filteredEvents) {
   currentFilteredEvents = filteredEvents;
   container.innerHTML = `
@@ -37,14 +49,11 @@ function renderTimeline(filteredEvents) {
   const endDate = new Date(Math.max(...dates));
   const totalDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
 
-  // ✅ NEW: Calculate dynamically to fit 1 year per screen width
   const pixelsPerDay = window.innerWidth / 440;
-
   const timelineWidth = Math.max(window.innerWidth, totalDays * pixelsPerDay + 400);
   container.style.width = timelineWidth + "px";
   container.style.position = "relative";
 
-  // Add event points
   filteredEvents.forEach((event, i) => {
     const eventDate = new Date(event.date);
     const daysSinceStart = (eventDate - startDate) / (1000 * 60 * 60 * 24);
@@ -63,6 +72,7 @@ function renderTimeline(filteredEvents) {
     point.addEventListener("click", () => {
       currentIndex = i;
       highlightAndCenter(i);
+      updateURL(event);
     });
 
     const georgianMonths = [
@@ -83,7 +93,6 @@ function renderTimeline(filteredEvents) {
     container.appendChild(wrapper);
   });
 
-  // ✅ Scroll to the first event or the start date
   requestAnimationFrame(() => {
     highlightAndCenter(currentIndex);
     const timelineLine = container.querySelector(".timeline-line");
@@ -99,20 +108,18 @@ function highlightAndCenter(index) {
   const selected = wrappers[index];
   if (!selected) return;
 
-  // Remove all highlight/dimmed states first
   wrappers.forEach((w, i) => {
     if (i === index) {
       w.classList.add("highlight");
       w.classList.remove("dimmed");
-      w.style.zIndex = 10; // bring to top
+      w.style.zIndex = 10;
     } else {
       w.classList.remove("highlight");
       w.classList.add("dimmed");
-      w.style.zIndex = 1; // send backward
+      w.style.zIndex = 1;
     }
   });
 
-  // Center selected
   const containerWidth = scrollArea.clientWidth;
   const targetCenter = selected.offsetLeft + selected.offsetWidth / 2;
   let scrollTo = targetCenter - containerWidth / 2;
@@ -123,16 +130,70 @@ function highlightAndCenter(index) {
   showEvent(currentFilteredEvents[index]);
 }
 
+function updateURL(event) {
+  const newURL = `${window.location.origin}${window.location.pathname}#${event.slug}`;
+  window.history.pushState({ eventSlug: event.slug }, '', newURL);
+  updateMetaTags(event);
+}
+
+function updateMetaTags(event) {
+  const eventURL = `${window.location.origin}${window.location.pathname}#${event.slug}`;
+  const description = stripHTML(event.description).substring(0, 200) + '...';
+  const imageURL = event.image || 'https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png';
+
+  // Update Open Graph tags
+  setMetaTag('og:title', event.title);
+  setMetaTag('og:description', description);
+  setMetaTag('og:image', imageURL);
+  setMetaTag('og:url', eventURL);
+
+  // Update Twitter Card tags
+  setMetaTag('twitter:title', event.title);
+  setMetaTag('twitter:description', description);
+  setMetaTag('twitter:image', imageURL);
+
+  // Update page title
+  document.title = `${event.title} | პოსტრევოლუციური მმართველობა`;
+  
+  // Update canonical URL
+  document.getElementById('og-url')?.setAttribute('content', eventURL);
+}
+
+function setMetaTag(property, content) {
+  let meta = document.querySelector(`meta[property="${property}"]`);
+  if (!meta) {
+    meta = document.querySelector(`meta[name="${property}"]`);
+  }
+  
+  if (meta) {
+    meta.setAttribute('content', content);
+  } else {
+    meta = document.createElement('meta');
+    if (property.startsWith('og:')) {
+      meta.setAttribute('property', property);
+    } else {
+      meta.setAttribute('name', property);
+    }
+    meta.setAttribute('content', content);
+    document.head.appendChild(meta);
+  }
+}
+
+function stripHTML(html) {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+}
+
 function showEvent(event) {
   const targetDate = event.date;
   const sameDateEvents = currentFilteredEvents.filter(e => e.date === targetDate);
 
-  fixedEventBox.innerHTML = ""; // Clear previous content
+  fixedEventBox.innerHTML = "";
 
   const wrapper = document.createElement("div");
   wrapper.classList.add("event-group");
 
-  // ✅ Apply 'single-event' class to the event group, not the fixed container
   if (sameDateEvents.length === 1) {
     wrapper.classList.add("single-event");
   }
@@ -140,7 +201,7 @@ function showEvent(event) {
   sameDateEvents.forEach(ev => {
     const card = document.createElement("div");
     card.className = "event-card";
-    card.style.position = "relative"; // for absolute positioning of share button
+    card.style.position = "relative";
   
     const hasMedia = ev.image || ev.video;
   
@@ -160,7 +221,6 @@ function showEvent(event) {
     contentDiv.className = "event-content";
     contentDiv.style.position = 'relative';
     
-    // Create inner scrollable wrapper
     const scrollWrapper = document.createElement("div");
     scrollWrapper.className = "event-content-scroll";
     scrollWrapper.style.cssText = `
@@ -171,7 +231,6 @@ function showEvent(event) {
   
     const dateFormatted = new Date(ev.date).toLocaleDateString("ka-GE");
     
-    // Get category label and color (only if category exists)
     let categoryBadge = "";
     if (ev.category) {
       const categoryLabel = categoryLabelsGeo[ev.category] || ev.category;
@@ -206,7 +265,6 @@ function showEvent(event) {
     
     contentDiv.appendChild(scrollWrapper);
     
-    // Add fade overlay OUTSIDE the scroll wrapper
     const fadeOverlay = document.createElement('div');
     fadeOverlay.className = 'scroll-fade-overlay';
     fadeOverlay.style.cssText = `
@@ -235,8 +293,7 @@ function showEvent(event) {
     shareWrapper.className = "share-wrapper";
     
     shareWrapper.innerHTML = `
-      <button class="share-button" aria-label="გაზიარება">Share</button>
-
+      <button class="share-button" aria-label="გაზიარება">გაზიარება</button>
       <div class="share-menu">
         <button data-action="copy">🔗 ბმული</button>
         <button data-action="facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" width="16" height="16"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.406.593 24 1.325 24H12v-9.294H9.294V11.06H12V8.412c0-2.708 1.645-4.182 4.045-4.182 1.153 0 2.142.086 2.428.124v2.816h-1.666c-1.306 0-1.557.621-1.557 1.531v2.01h3.115l-.406 3.647H15.25V24h7.425c.73 0 1.325-.594 1.325-1.324V1.325C24 .593 23.406 0 22.675 0z"/></svg> Facebook</button>
@@ -254,7 +311,6 @@ function showEvent(event) {
       shareMenu.classList.toggle("open");
     });
 
-    // Close menu when clicking elsewhere
     document.addEventListener("click", () => {
       shareMenu.classList.remove("open");
     });
@@ -267,33 +323,29 @@ function showEvent(event) {
     });
 
     function handleShareAction(event, action) {
-      const eventId = event.date.replace(/\//g, '-');
-      const url = `${window.location.origin}${window.location.pathname}#event-${eventId}`;
+      const url = `${window.location.origin}${window.location.pathname}#${event.slug}`;
       const title = event.title;
-      const text = event.description.substring(0, 200) + "…";
+      const text = stripHTML(event.description).substring(0, 200) + "…";
     
       if (action === "copy") {
-        navigator.clipboard.writeText(`${title}\n\n${text}\n\n${url}`);
+        navigator.clipboard.writeText(url);
         showToast("ბმული დაკოპირებულია");
       }
     
       if (action === "facebook") {
         window.open(
           `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-          "_blank"
+          "_blank",
+          "width=600,height=400"
         );
       }
     
       if (action === "linkedin") {
         window.open(
           `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
-          "_blank"
+          "_blank",
+          "width=600,height=400"
         );
-      }
-    
-      if (action === "mail") {
-        window.location.href =
-          `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + "\n\n" + url)}`;
       }
     }
 
@@ -326,25 +378,21 @@ function showEvent(event) {
       }, 2000);
     }
   
-    // 🔹 Add charts if present
     if (ev.charts && Array.isArray(ev.charts)) {
       ev.charts.forEach((chartObj, chartIndex) => {
         const chartContainer = document.createElement("div");
         chartContainer.className = "chart-container";
   
-        // Add chart title above the canvas
         const chartTitle = document.createElement("h4");
         chartTitle.textContent = chartObj.chart_title;
         chartContainer.appendChild(chartTitle);
   
-        // Add canvas element
         const canvas = document.createElement("canvas");
         canvas.id = `chart-${ev.date}-${chartIndex}`;
         chartContainer.appendChild(canvas);
   
         card.appendChild(chartContainer);
   
-        // Delay rendering until canvas is attached
         requestAnimationFrame(() => {
           const ctx = canvas.getContext("2d");
           new Chart(ctx, {
@@ -371,7 +419,7 @@ function showEvent(event) {
                     color: "#000",
                     font: {
                       size: 12,
-                      family: "'IBM Plex Mono', monospace" // or just "monospace"
+                      family: "'IBM Plex Mono', monospace"
                     }
                   },
                   grid: {
@@ -398,18 +446,18 @@ function showEvent(event) {
 
   fixedEventBox.appendChild(wrapper);
   
-  // ✅ Update scroll indicators after DOM is ready
   requestAnimationFrame(() => {
     updateScrollIndicators();
     
-    // Add scroll listeners to scroll wrappers
     document.querySelectorAll('.event-content-scroll').forEach(scroll => {
       scroll.addEventListener('scroll', updateScrollIndicators);
     });
   });
+  
+  // Update meta tags for sharing
+  updateMetaTags(event);
 }
 
-// ✅ Show fade gradient when content is scrollable
 function updateScrollIndicators() {
   document.querySelectorAll('.event-content').forEach((content) => {
     const scrollWrapper = content.querySelector('.event-content-scroll');
@@ -428,105 +476,6 @@ function updateScrollIndicators() {
   });
 }
 
-// Share event function
-async function shareEvent(event) {
-  // Update Open Graph meta tags dynamically for this specific event
-  updateMetaTags(event);
-  
-  // Create a shareable URL with event identifier (date-based)
-  const eventId = event.date.replace(/\//g, '-');
-  const eventUrl = `${window.location.origin}${window.location.pathname}#event-${eventId}`;
-  
-  const shareData = {
-    title: event.title,
-    text: event.description.substring(0, 200) + '...', // First 200 chars
-    url: eventUrl
-  };
-
-  // If Web Share API is supported (mobile devices)
-  if (navigator.share) {
-    try {
-      await navigator.share(shareData);
-    } catch (err) {
-      if (err.name !== 'AbortError') {
-        fallbackShare(shareData);
-      }
-    }
-  } else {
-    // Fallback for desktop - copy to clipboard
-    fallbackShare(shareData);
-  }
-}
-
-// Update meta tags for social sharing preview
-function updateMetaTags(event) {
-  // Update or create Open Graph meta tags
-  setMetaTag('og:title', event.title);
-  setMetaTag('og:description', event.description.substring(0, 200));
-  if (event.image) {
-    setMetaTag('og:image', event.image);
-  }
-  
-  // Update Twitter Card meta tags
-  setMetaTag('twitter:title', event.title);
-  setMetaTag('twitter:description', event.description.substring(0, 200));
-  if (event.image) {
-    setMetaTag('twitter:image', event.image);
-  }
-  
-  // Update page title
-  document.title = event.title;
-}
-
-function setMetaTag(property, content) {
-  let meta = document.querySelector(`meta[property="${property}"]`);
-  if (!meta) {
-    meta = document.querySelector(`meta[name="${property}"]`);
-  }
-  
-  if (meta) {
-    meta.setAttribute('content', content);
-  } else {
-    // Create the meta tag if it doesn't exist
-    meta = document.createElement('meta');
-    if (property.startsWith('og:')) {
-      meta.setAttribute('property', property);
-    } else {
-      meta.setAttribute('name', property);
-    }
-    meta.setAttribute('content', content);
-    document.head.appendChild(meta);
-  }
-}
-
-function fallbackShare(shareData) {
-  const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-  
-  navigator.clipboard.writeText(shareText).then(() => {
-    // Show temporary notification
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-family: 'IBM Plex Mono', monospace;
-      z-index: 1000;
-      animation: fadeInOut 2s ease;
-    `;
-    notification.textContent = 'ლინკი დაკოპირებულია!';
-    document.body.appendChild(notification);
-    
-    setTimeout(() => notification.remove(), 2000);
-  }).catch(err => {
-    console.error('Could not copy text:', err);
-  });
-}
-
 function renderTicks(startDate, endDate, pixelsPerDay) {
   const ticksContainer = document.createElement("div");
   ticksContainer.className = "timeline-tick";
@@ -534,11 +483,10 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
   ticksContainer.style.top = "0";
   ticksContainer.style.left = "0";
   ticksContainer.style.height = "100%";
-  ticksContainer.style.width = container.scrollWidth + "px"; // Full width
+  ticksContainer.style.width = container.scrollWidth + "px";
   ticksContainer.style.pointerEvents = "none";
   container.appendChild(ticksContainer);
 
-  // 🗓️ Big year ticks at Jan 1st
   let yearStart = new Date(startDate.getFullYear(), 0, 1);
   while (yearStart <= endDate) {
     const daysSinceStart = (yearStart - startDate) / (1000 * 60 * 60 * 24);
@@ -563,13 +511,11 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
     yearStart.setFullYear(yearStart.getFullYear() + 1);
   }
 
-  // 🌟 Special ticks to be labeled
   const specialTicks = {
     "": { label: "rose revolution", color: "#3498db" },
     "": { label: "არჩევნები", color: "#f39c12" }
   };
 
-  // 🔸 Monthly ticks (some are labeled if special)
   let current = new Date(startDate);
   current.setDate(1);
 
@@ -577,7 +523,8 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
     const daysSinceStart = (current - startDate) / (1000 * 60 * 60 * 24);
     const left = daysSinceStart * pixelsPerDay;
 
-    const key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(current.getDate()).padStart(2, "0")}`;    const isSpecial = specialTicks[key];
+    const key = `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(current.getDate()).padStart(2, "0")}`;
+    const isSpecial = specialTicks[key];
 
     const tick = document.createElement("div");
     tick.className = "timeline-tick";
@@ -615,7 +562,6 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
     current.setMonth(current.getMonth() + 1);
   }
 
-  // 🔹 Minor ticks every 7 days — no labels
   let minorCurrent = new Date(startDate);
   while (minorCurrent <= endDate) {
     const daysSinceStart = (minorCurrent - startDate) / (1000 * 60 * 60 * 24);
@@ -635,7 +581,6 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
     minorCurrent.setDate(minorCurrent.getDate() + 7);
   }
 
-  // 🔸 Tiny daily ticks (even smaller than minor ticks)
   let dailyCurrent = new Date(startDate);
   while (dailyCurrent <= endDate) {
     const daysSinceStart = (dailyCurrent - startDate) / (1000 * 60 * 60 * 24);
@@ -650,7 +595,7 @@ function renderTicks(startDate, endDate, pixelsPerDay) {
     tick.style.zIndex = 0;
 
     ticksContainer.appendChild(tick);
-    dailyCurrent.setDate(dailyCurrent.getDate() + 1); // every day
+    dailyCurrent.setDate(dailyCurrent.getDate() + 1);
   }
 }
 
@@ -666,15 +611,14 @@ function applyFilters() {
   renderTimeline(filtered);
 }
 
-// Trigger filter immediately on dropdown change
 document.getElementById("yearFilter").addEventListener("change", applyFilters);
 
-// Add hover preview for left arrow
 document.getElementById("left-scroll").addEventListener("click", () => {
   const prevIndex = findNextUniqueDateIndex(currentIndex, -1);
   if (prevIndex !== currentIndex) {
     currentIndex = prevIndex;
     highlightAndCenter(currentIndex);
+    updateURL(currentFilteredEvents[currentIndex]);
   }
 });
 
@@ -683,6 +627,7 @@ document.getElementById("right-scroll").addEventListener("click", () => {
   if (nextIndex !== currentIndex) {
     currentIndex = nextIndex;
     highlightAndCenter(currentIndex);
+    updateURL(currentFilteredEvents[currentIndex]);
   }
 });
 
@@ -694,6 +639,7 @@ document.getElementById("left-scroll").addEventListener("mouseenter", () => {
     preview.style.display = "block";
   }
 });
+
 document.getElementById("left-scroll").addEventListener("mouseleave", () => {
   document.getElementById("left-preview").style.display = "none";
 });
@@ -706,11 +652,11 @@ document.getElementById("right-scroll").addEventListener("mouseenter", () => {
     preview.style.display = "block";
   }
 });
+
 document.getElementById("right-scroll").addEventListener("mouseleave", () => {
   document.getElementById("right-preview").style.display = "none";
 });
 
-// Navigation utility
 function findNextUniqueDateIndex(startIndex, direction) {
   const currentDate = currentFilteredEvents[startIndex].date;
   let i = startIndex + direction;
@@ -726,7 +672,6 @@ function findNextUniqueDateIndex(startIndex, direction) {
   return (i >= 0 && i < currentFilteredEvents.length) ? i : startIndex;
 }
 
-// About modal toggle
 const aboutBtn = document.getElementById("aboutBtn");
 const aboutModal = document.getElementById("aboutModal");
 const closeAbout = document.getElementById("closeAbout");
@@ -739,31 +684,28 @@ closeAbout.addEventListener("click", () => {
   aboutModal.style.display = "none";
 });
 
-// Optional: Close when clicking outside the modal
 window.addEventListener("click", (e) => {
   if (e.target === aboutModal) {
     aboutModal.style.display = "none";
   }
 });
 
-// Optional: keyboard navigation
 document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") {
     const nextIndex = findNextUniqueDateIndex(currentIndex, +1);
     if (nextIndex !== currentIndex) {
       currentIndex = nextIndex;
       highlightAndCenter(currentIndex);
+      updateURL(currentFilteredEvents[currentIndex]);
     }
   } else if (e.key === "ArrowLeft") {
     const prevIndex = findNextUniqueDateIndex(currentIndex, -1);
     if (prevIndex !== currentIndex) {
       currentIndex = prevIndex;
       highlightAndCenter(currentIndex);
+      updateURL(currentFilteredEvents[currentIndex]);
     }
   }
 });
 
-// Update scroll indicators on window resize
 window.addEventListener('resize', updateScrollIndicators);
-
-window.addEventListener("load", () => renderTimeline(events));
