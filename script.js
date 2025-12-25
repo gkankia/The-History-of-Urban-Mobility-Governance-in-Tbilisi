@@ -140,6 +140,7 @@ function showEvent(event) {
   sameDateEvents.forEach(ev => {
     const card = document.createElement("div");
     card.className = "event-card";
+    card.style.position = "relative"; // for absolute positioning of share button
   
     const hasMedia = ev.image || ev.video;
   
@@ -228,6 +229,102 @@ function showEvent(event) {
   
     card.innerHTML = mediaHTML;
     card.appendChild(contentDiv);
+    
+    // Add share button
+    const shareWrapper = document.createElement("div");
+    shareWrapper.className = "share-wrapper";
+    
+    shareWrapper.innerHTML = `
+      <button class="share-button" aria-label="გაზიარება">Share</button>
+
+      <div class="share-menu">
+        <button data-action="copy">🔗 ბმული</button>
+        <button data-action="facebook"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2" width="16" height="16"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.406.593 24 1.325 24H12v-9.294H9.294V11.06H12V8.412c0-2.708 1.645-4.182 4.045-4.182 1.153 0 2.142.086 2.428.124v2.816h-1.666c-1.306 0-1.557.621-1.557 1.531v2.01h3.115l-.406 3.647H15.25V24h7.425c.73 0 1.325-.594 1.325-1.324V1.325C24 .593 23.406 0 22.675 0z"/></svg> Facebook</button>
+        <button data-action="linkedin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0077B5" width="16" height="16"><path d="M22.225 0H1.771C.792 0 0 .77 0 1.719v20.563C0 23.23.792 24 1.771 24H22.23c.978 0 1.77-.77 1.77-1.719V1.719C24 .77 23.208 0 22.225 0zM7.08 20.452H3.542V9H7.08v11.452zM5.31 7.557c-1.136 0-2.057-.922-2.057-2.058 0-1.136.92-2.058 2.057-2.058s2.058.922 2.058 2.058c0 1.136-.922 2.058-2.058 2.058zm15.141 12.895h-3.537v-5.518c0-1.314-.027-3.004-1.831-3.004-1.833 0-2.115 1.434-2.115 2.915v5.607h-3.537V9h3.395v1.561h.049c.473-.896 1.631-1.84 3.358-1.84 3.592 0 4.253 2.366 4.253 5.444v6.287z"/></svg> LinkedIn</button>
+      </div>
+    `;
+    
+    card.appendChild(shareWrapper);
+
+    const shareButton = shareWrapper.querySelector(".share-button");
+    const shareMenu = shareWrapper.querySelector(".share-menu");
+
+    shareButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      shareMenu.classList.toggle("open");
+    });
+
+    // Close menu when clicking elsewhere
+    document.addEventListener("click", () => {
+      shareMenu.classList.remove("open");
+    });
+
+    shareMenu.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        handleShareAction(ev, btn.dataset.action);
+        shareMenu.classList.remove("open");
+      });
+    });
+
+    function handleShareAction(event, action) {
+      const eventId = event.date.replace(/\//g, '-');
+      const url = `${window.location.origin}${window.location.pathname}#event-${eventId}`;
+      const title = event.title;
+      const text = event.description.substring(0, 200) + "…";
+    
+      if (action === "copy") {
+        navigator.clipboard.writeText(`${title}\n\n${text}\n\n${url}`);
+        showToast("ბმული დაკოპირებულია");
+      }
+    
+      if (action === "facebook") {
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+          "_blank"
+        );
+      }
+    
+      if (action === "linkedin") {
+        window.open(
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+          "_blank"
+        );
+      }
+    
+      if (action === "mail") {
+        window.location.href =
+          `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + "\n\n" + url)}`;
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.createElement("div");
+      toast.className = "share-toast";
+      toast.textContent = message;
+      document.body.appendChild(toast);
+    
+      toast.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.85);
+        color: #fff;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-family: 'IBM Plex Mono', monospace;
+        z-index: 10000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+    
+      requestAnimationFrame(() => toast.style.opacity = 1);
+    
+      setTimeout(() => {
+        toast.style.opacity = 0;
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }
   
     // 🔹 Add charts if present
     if (ev.charts && Array.isArray(ev.charts)) {
@@ -328,6 +425,105 @@ function updateScrollIndicators() {
     } else {
       fadeOverlay.style.opacity = '0';
     }
+  });
+}
+
+// Share event function
+async function shareEvent(event) {
+  // Update Open Graph meta tags dynamically for this specific event
+  updateMetaTags(event);
+  
+  // Create a shareable URL with event identifier (date-based)
+  const eventId = event.date.replace(/\//g, '-');
+  const eventUrl = `${window.location.origin}${window.location.pathname}#event-${eventId}`;
+  
+  const shareData = {
+    title: event.title,
+    text: event.description.substring(0, 200) + '...', // First 200 chars
+    url: eventUrl
+  };
+
+  // If Web Share API is supported (mobile devices)
+  if (navigator.share) {
+    try {
+      await navigator.share(shareData);
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        fallbackShare(shareData);
+      }
+    }
+  } else {
+    // Fallback for desktop - copy to clipboard
+    fallbackShare(shareData);
+  }
+}
+
+// Update meta tags for social sharing preview
+function updateMetaTags(event) {
+  // Update or create Open Graph meta tags
+  setMetaTag('og:title', event.title);
+  setMetaTag('og:description', event.description.substring(0, 200));
+  if (event.image) {
+    setMetaTag('og:image', event.image);
+  }
+  
+  // Update Twitter Card meta tags
+  setMetaTag('twitter:title', event.title);
+  setMetaTag('twitter:description', event.description.substring(0, 200));
+  if (event.image) {
+    setMetaTag('twitter:image', event.image);
+  }
+  
+  // Update page title
+  document.title = event.title;
+}
+
+function setMetaTag(property, content) {
+  let meta = document.querySelector(`meta[property="${property}"]`);
+  if (!meta) {
+    meta = document.querySelector(`meta[name="${property}"]`);
+  }
+  
+  if (meta) {
+    meta.setAttribute('content', content);
+  } else {
+    // Create the meta tag if it doesn't exist
+    meta = document.createElement('meta');
+    if (property.startsWith('og:')) {
+      meta.setAttribute('property', property);
+    } else {
+      meta.setAttribute('name', property);
+    }
+    meta.setAttribute('content', content);
+    document.head.appendChild(meta);
+  }
+}
+
+function fallbackShare(shareData) {
+  const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
+  
+  navigator.clipboard.writeText(shareText).then(() => {
+    // Show temporary notification
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      font-family: 'IBM Plex Mono', monospace;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    `;
+    notification.textContent = 'ლინკი დაკოპირებულია!';
+    document.body.appendChild(notification);
+    
+    setTimeout(() => notification.remove(), 2000);
+  }).catch(err => {
+    console.error('Could not copy text:', err);
   });
 }
 
