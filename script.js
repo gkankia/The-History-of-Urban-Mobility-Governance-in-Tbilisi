@@ -323,26 +323,33 @@ function showEvent(event) {
     });
 
     function handleShareAction(event, action) {
-      const url = `${window.location.origin}${window.location.pathname}#${event.slug}`;
+      // Use the static event page URL for social sharing (better previews)
+      const staticUrl = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
+      // Use hash URL for direct copying (current format for internal navigation)
+      const hashUrl = `https://mobilitytrajectories.netlify.app/#${event.slug}`;
+      
       const title = event.title;
       const text = stripHTML(event.description).substring(0, 200) + "…";
     
       if (action === "copy") {
-        navigator.clipboard.writeText(url);
+        // Copy the hash URL for easy sharing with friends
+        navigator.clipboard.writeText(staticUrl);
         showToast("ბმული დაკოპირებულია");
       }
     
       if (action === "facebook") {
+        // Use static URL for better Open Graph preview
         window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(staticUrl)}`,
           "_blank",
           "width=600,height=400"
         );
       }
     
       if (action === "linkedin") {
+        // Use static URL for better Open Graph preview
         window.open(
-          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(staticUrl)}`,
           "_blank",
           "width=600,height=400"
         );
