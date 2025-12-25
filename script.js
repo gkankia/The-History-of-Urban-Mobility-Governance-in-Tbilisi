@@ -19,16 +19,48 @@ const container = document.getElementById("timeline");
 const scrollArea = document.querySelector(".timeline-scroll-wrapper");
 const fixedEventBox = document.getElementById("fixedEventBox");
 
-// Check for hash on page load and navigate to that event
+// Check for URL path or hash on page load and navigate to that event
 window.addEventListener('load', () => {
-  const hash = window.location.hash.substring(1);
-  if (hash) {
-    const eventIndex = events.findIndex(e => e.slug === hash);
+  let eventSlug = null;
+  
+  // Check if we're on an event page path like /event/event-2004-01-01/
+  const pathMatch = window.location.pathname.match(/\/event\/([^\/]+)/);
+  if (pathMatch) {
+    eventSlug = pathMatch[1];
+  }
+  // Fallback to hash format for backwards compatibility
+  else if (window.location.hash) {
+    eventSlug = window.location.hash.substring(1);
+  }
+  
+  if (eventSlug) {
+    const eventIndex = events.findIndex(e => e.slug === eventSlug);
     if (eventIndex !== -1) {
       currentIndex = eventIndex;
     }
   }
   renderTimeline(events);
+});
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.eventSlug) {
+    const eventIndex = events.findIndex(ev => ev.slug === e.state.eventSlug);
+    if (eventIndex !== -1) {
+      currentIndex = eventIndex;
+      highlightAndCenter(currentIndex);
+    }
+  } else {
+    // If no state, check the URL
+    const pathMatch = window.location.pathname.match(/\/event\/([^\/]+)/);
+    if (pathMatch) {
+      const eventIndex = events.findIndex(ev => ev.slug === pathMatch[1]);
+      if (eventIndex !== -1) {
+        currentIndex = eventIndex;
+        highlightAndCenter(currentIndex);
+      }
+    }
+  }
 });
 
 function renderTimeline(filteredEvents) {
@@ -131,7 +163,7 @@ function highlightAndCenter(index) {
 }
 
 function updateURL(event) {
-  const newURL = `${window.location.origin}${window.location.pathname}#${event.slug}`;
+  const newURL = `/event/${event.slug}/`;
   window.history.pushState({ eventSlug: event.slug }, '', newURL);
   updateMetaTags(event);
 }
@@ -323,33 +355,27 @@ function showEvent(event) {
     });
 
     function handleShareAction(event, action) {
-      // Use the static event page URL for social sharing (better previews)
-      const staticUrl = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
-      // Use hash URL for direct copying (current format for internal navigation)
-      const hashUrl = `https://mobilitytrajectories.netlify.app/#${event.slug}`;
-      
+      // All sharing now uses the same clean URL
+      const shareUrl = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
       const title = event.title;
       const text = stripHTML(event.description).substring(0, 200) + "…";
     
       if (action === "copy") {
-        // Copy the hash URL for easy sharing with friends
-        navigator.clipboard.writeText(staticUrl);
+        navigator.clipboard.writeText(shareUrl);
         showToast("ბმული დაკოპირებულია");
       }
     
       if (action === "facebook") {
-        // Use static URL for better Open Graph preview
         window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(staticUrl)}`,
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
           "_blank",
           "width=600,height=400"
         );
       }
     
       if (action === "linkedin") {
-        // Use static URL for better Open Graph preview
         window.open(
-          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(staticUrl)}`,
+          `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
           "_blank",
           "width=600,height=400"
         );
