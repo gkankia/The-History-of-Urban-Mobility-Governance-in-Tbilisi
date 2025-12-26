@@ -169,7 +169,7 @@ function updateURL(event) {
 }
 
 function updateMetaTags(event) {
-  const eventURL = `https://mobilitytrajectories.gkankia.xyz/event/${event.slug}/`;
+  const eventURL = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
   const description = stripHTML(event.description).substring(0, 200) + '...';
   const imageURL = event.image || 'https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%99%E1%83%95%E1%83%98%E1%83%A0%E1%83%98%E1%83%A1%20%E1%83%9E%E1%83%90%E1%83%9A%E1%83%98%E1%83%A2%E1%83%A0%E1%83%90%20-3%202004.png';
 
@@ -359,7 +359,7 @@ function showEvent(event) {
 
     function handleShareAction(event, action) {
       // All sharing now uses the same clean URL
-      const shareUrl = `https://mobilitytrajectories.gkankia.xyz/event/${event.slug}/`;
+      const shareUrl = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
       const title = event.title;
       const text = stripHTML(event.description).substring(0, 200) + "…";
     
