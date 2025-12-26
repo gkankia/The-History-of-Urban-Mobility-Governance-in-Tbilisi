@@ -7,7 +7,7 @@ const path = require('path');
 // Import your events (adjust the path as needed)
 const events = require('./events-data.js');
 
-const SITE_URL = 'https://mobilitytrajectories.netlify.app';
+const SITE_URL = 'https://mobilitytrajectories.gkankia.xyz';
 const OUTPUT_DIR = './event';
 
 // Helper function to strip HTML tags

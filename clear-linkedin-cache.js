@@ -4,7 +4,7 @@
 
 const events = require('./events-data.js');
 
-const SITE_URL = 'https://mobilitytrajectories.netlify.app'; // Your actual domain
+const SITE_URL = 'https://mobilitytrajectories.gkankia.xyz'; // Your actual domain
 
 console.log('\n📋 LinkedIn Post Inspector URLs\n');
 console.log('Copy and paste these URLs into LinkedIn Post Inspector to refresh cache:');

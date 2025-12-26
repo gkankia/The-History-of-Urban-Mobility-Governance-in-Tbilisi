@@ -356,7 +356,7 @@ function showEvent(event) {
 
     function handleShareAction(event, action) {
       // All sharing now uses the same clean URL
-      const shareUrl = `https://mobilitytrajectories.netlify.app/event/${event.slug}/`;
+      const shareUrl = `https://mobilitytrajectories.gkankia.xyz/event/${event.slug}/`;
       const title = event.title;
       const text = stripHTML(event.description).substring(0, 200) + "…";
     
