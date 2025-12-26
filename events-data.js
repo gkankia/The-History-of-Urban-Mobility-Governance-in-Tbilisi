@@ -133,7 +133,8 @@ const events = [
     საპრეზიდენტო სიტყვის შესავალში, მიხეილ სააკაშვილი თბილისის მთავარ გამზირს ერის კოლექტიური მეხსიერების სივრცედ აღწერს: 
     <blockquote>ეს არის ადგილი, სადაც საქართველოსთვის თავდადებული გმირები თავს სწირავდნენ [...] აქ დაეცნენ იუნკერები, [...] აქ დაიღუპნენ გმირები, რომლებიც იბრძოდნენ
     საქართველოს დამოუკიდებლობისთვის 1989 წლის 9 აპრილს [...] თხუთმეტწამიანი დუმილით მივაგოთ პატივი მათ ხსოვნას.</blockquote>`, 
-    category: "event", image: "https://dspace.nplg.gov.ge/bitstream/1234/147161/1/Mikheil_Saakashvili%20%2810%29.jpg", imageCaption: 'ფოტო: ელეფთერ ლაფაჩი, 2004',
+    category: "event", image: "https://dspace.nplg.gov.ge/bitstream/1234/147161/1/Mikheil_Saakashvili%20%2810%29.jpg", 
+    imageCaption: 'ფოტო: <a href="https://dspace.nplg.gov.ge/handle/1234/147161" target="_blank">ელეფთერ ლაფაჩი, 2004</a>',
     source:
       {
         name: "24 საათი #20 (569), 2004",
