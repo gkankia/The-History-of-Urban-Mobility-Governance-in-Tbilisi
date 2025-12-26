@@ -97,7 +97,7 @@ const events = [
     description: `თბილისის მაშინდელი მერი ქალაქის გამოწვევად <strong>250 მლნ ლარით გარღვეული მუნიციპალური ბიუჯეტის კვალდაკვალ,</strong> ენერგეტიკულ და სატრანსპორტო პრობლემებსაც მიიჩნევდა 
     და არაერთი ახალი ობიექტის მშენებლობის დაპირებას იძლეოდა: <blockquote>უპირველესად, მეტროსადგურ 'უნივერსიტეტის' მშენებლობას ვგულისხმობ [...] 
     სამარშრუტო ტაქსების რაოდენობა შემცირდება, გაიხსნება რუსთაველის გამზირის პარალელური ძნელაძის ქუჩა, დიდუბის რაიონში ესტაკადის მშენებლობის დაწყებას ვაპირებთ.</blockquote>`, 
-    category: "article", image: "https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/ვანო ზოდელავა 2004.png", 
+    category: "article", image: "https://raw.githubusercontent.com/gkankia/The-History-of-Urban-Mobility-Governance-in-Tbilisi/refs/heads/main/img/%E1%83%95%E1%83%90%E1%83%9C%E1%83%9D%20%E1%83%96%E1%83%9D%E1%83%93%E1%83%94%E1%83%9A%E1%83%90%E1%83%95%E1%83%90%202004.png", 
     source: {
       name: "კვირის პალიტრა #3 (464), 2004",
       url: "https://dspace.nplg.gov.ge/bitstream/1234/16518/1/KvirisPalitra_2004_N03.pdf"
