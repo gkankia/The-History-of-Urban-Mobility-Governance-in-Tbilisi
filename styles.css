@@ -710,3 +710,31 @@ a.in_text_source:hover {
 .share-menu button:hover {
   background: #f0f0f0;
 }
+
+/* Image caption styles */
+.event-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.event-image-caption {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  color: #666;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.event-image-caption a {
+  color: #d32121;
+  text-decoration: none;
+}
+
+.event-image-caption a:hover {
+  text-decoration: underline;
+}
