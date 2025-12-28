@@ -717,24 +717,27 @@ a.in_text_source:hover {
   display: flex;
   flex-direction: column;
   height: 100%;
+  z-index: 100000;
 }
 
 .event-image-caption {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #666;
-  padding: 0.75rem;
-  background: #f8f9fa;
-  border-top: 1px solid #e9ecef;
+  background-color: #ffffffe6;
+  border-radius: 0 0 5px 0;
+  padding: 0.5rem;
   text-align: left;
-  line-height: 1.4;
+  line-height: 1;
+  position: absolute;
 }
 
 .event-image-caption a {
-  color: #d32121;
+  color: #666;
   text-decoration: none;
 }
 
 .event-image-caption a:hover {
+  color: #d32121;
   text-decoration: underline;
 }
